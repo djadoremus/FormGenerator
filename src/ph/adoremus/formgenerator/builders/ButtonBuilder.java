@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class ButtonBuilder implements ViewBuilder{
-	private Logger logger = Logger.getInstance(EditTextBuilder.class.getName());
+	private Logger logger = Logger.getInstance(this.getClass().getName());
 	
 	private Button view;
 	private LinearLayout llContainer;

@@ -8,6 +8,7 @@ import ph.adoremus.formgenerator.builders.ButtonBuilder;
 import ph.adoremus.formgenerator.builders.EditTextBuilder;
 import ph.adoremus.formgenerator.builders.FormBuilder;
 import ph.adoremus.formgenerator.builders.ViewBuilder;
+import ph.adoremus.formgenerator.callback.FormCallback;
 import ph.adoremus.log.Logger;
 import android.os.Bundle;
 import android.app.Activity;
@@ -20,8 +21,9 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements FormCallback{
 
 	private Logger logger = Logger.getInstance(MainActivity.class.getName());
 	
@@ -73,6 +75,7 @@ public class MainActivity extends Activity {
 		
 		JSONObject obj = new JSONObject();
 		JSONArray etArray = new JSONArray();
+		JSONArray spArray = new JSONArray();
 		
 		try {
 			for (int i=0; i<3; i++){
@@ -85,9 +88,19 @@ public class MainActivity extends Activity {
 				etArray.put(et);
 			}
 			
-			obj.put("editTexts", etArray);
+			for (int k=0; k<2; k++){
+				JSONObject sp = new JSONObject();
+				sp.put("id", "consectetur" + k);
+				sp.put("title", "adipiscing" + k);
+				sp.put("selections", new String[]{"elit", "Mauris", "vel", "vulputate", "ipsum"});
+				
+				spArray.put(sp);
+			}
 			
-			FormBuilder fb = new FormBuilder(getApplicationContext(), obj);
+			obj.put("editTexts", etArray);
+			obj.put("spinners", spArray);
+			
+			FormBuilder fb = new FormBuilder(this, obj);
 			
 			LinearLayout rl = (LinearLayout) findViewById(R.id.activitymain_llContainer);
 //			rl.addView(fb.getFormContainer());
@@ -108,6 +121,11 @@ public class MainActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+
+	@Override
+	public void call(JSONObject response) {
+		Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_LONG).show();
 	}
 
 }
