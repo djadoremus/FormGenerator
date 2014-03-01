@@ -1,7 +1,12 @@
 package ph.adoremus.formgenerator;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import ph.adoremus.formgenerator.builders.ButtonBuilder;
 import ph.adoremus.formgenerator.builders.EditTextBuilder;
+import ph.adoremus.formgenerator.builders.FormBuilder;
 import ph.adoremus.formgenerator.builders.ViewBuilder;
 import ph.adoremus.log.Logger;
 import android.os.Bundle;
@@ -25,6 +30,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
+		/*
 		final EditTextBuilder vb01 = new EditTextBuilder(getApplicationContext());
 		vb01.buildTitle("Sample Title 01".hashCode(), "Sample Title 01");
 		vb01.buildView("sampletitle01".hashCode(), InputType.TYPE_CLASS_TEXT, "Set Text here");
@@ -63,6 +69,38 @@ public class MainActivity extends Activity {
 		rl.addView(bb.getContainer());
 		
 		logger.debug("rl count " + rl.getChildCount());
+		*/
+		
+		JSONObject obj = new JSONObject();
+		JSONArray etArray = new JSONArray();
+		
+		try {
+			for (int i=0; i<3; i++){
+				JSONObject et = new JSONObject();
+				et.put("id", "lorem" + i);
+				et.put("title", "ipsum" + i);
+				et.put("attr", InputType.TYPE_CLASS_TEXT);
+				et.put("hint", "dolor sit amet " + i);
+				
+				etArray.put(et);
+			}
+			
+			obj.put("editTexts", etArray);
+			
+			FormBuilder fb = new FormBuilder(getApplicationContext(), obj);
+			
+			LinearLayout rl = (LinearLayout) findViewById(R.id.activitymain_llContainer);
+//			rl.addView(fb.getFormContainer());
+			for (View v : fb.getViews()){
+				rl.addView(v);
+			}
+			
+			logger.debug("rl count " + rl.getChildCount());
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	@Override
