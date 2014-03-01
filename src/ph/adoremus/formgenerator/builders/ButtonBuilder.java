@@ -1,37 +1,29 @@
 package ph.adoremus.formgenerator.builders;
 
 import ph.adoremus.log.Logger;
-import android.R;
 import android.content.Context;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class EditTextBuilder implements ViewBuilder{
-	
+public class ButtonBuilder implements ViewBuilder{
 	private Logger logger = Logger.getInstance(EditTextBuilder.class.getName());
 	
-	private TextView tvTitle;
-	private EditText view;
+	private Button view;
 	private LinearLayout llContainer;
 	
-	public EditTextBuilder(Context context) {
-		logger.debug("instantiating new ETB");
-		
-		this.tvTitle = new TextView(context);
-		this.view = new EditText(context);
+	public ButtonBuilder(Context context) {
+		this.view = new Button(context);
 		this.llContainer = new LinearLayout(context);
 	}
 	
 	@Override
 	public void buildTitle(Integer idHashCode, String title){
-		tvTitle.setId(idHashCode);
-		tvTitle.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-		tvTitle.setText(title);
 	}
 	
 	@Override
@@ -40,22 +32,16 @@ public class EditTextBuilder implements ViewBuilder{
 		view.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
 	}
 	
-	public void buildView(Integer idHashCode, Integer attr, String hint){
+	public void buildView(Integer idHashCode, String name, View.OnClickListener listener){
 		buildView(idHashCode);
-		view.setInputType(attr);
-		view.setHint(hint);
-	}
-	
-	public void buildView(Integer idHashCode, Integer attr, String hint, TextWatcher textWatcher){
-		buildView(idHashCode, attr, hint);
-		view.addTextChangedListener(textWatcher);
+		view.setText(name);
+		view.setOnClickListener(listener);
 	}
 	
 	@Override
 	public void buildContainer(){
 		llContainer.setOrientation(LinearLayout.VERTICAL);
 		llContainer.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-		llContainer.addView(tvTitle);
 		llContainer.addView(view);
 	}
 	

@@ -1,5 +1,6 @@
 package ph.adoremus.formgenerator.builders;
 
+import android.view.View;
 import android.view.ViewGroup;
 
 public interface ViewBuilder {
@@ -27,4 +28,6 @@ public interface ViewBuilder {
 	 * @return
 	 */
 	public ViewGroup getContainer();
+	
+	public View getConcreteView();
 }
