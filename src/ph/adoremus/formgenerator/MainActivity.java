@@ -9,6 +9,7 @@ import ph.adoremus.formgenerator.builders.EditTextBuilder;
 import ph.adoremus.formgenerator.builders.FormBuilder;
 import ph.adoremus.formgenerator.builders.ViewBuilder;
 import ph.adoremus.formgenerator.callback.FormCallback;
+import ph.adoremus.formgenerator.serializable.JSONSerializable;
 import ph.adoremus.log.Logger;
 import android.os.Bundle;
 import android.app.Activity;
@@ -151,7 +152,7 @@ public class MainActivity extends Activity implements FormCallback{
 			obj.put("spinners", spArray);
 			obj.put("datepickers", dpArray);
 			
-			FormBuilder fb = new FormBuilder(this, obj);
+			FormBuilder fb = new FormBuilder(this, obj, false, null);
 			
 			LinearLayout rl = (LinearLayout) findViewById(R.id.activitymain_llContainer);
 //			rl.addView(fb.getFormContainer());
@@ -173,7 +174,7 @@ public class MainActivity extends Activity implements FormCallback{
 	}
 
 	@Override
-	public void call(JSONObject response) {
+	public void call(JSONSerializable response) {
 		Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_LONG).show();
 	}
 

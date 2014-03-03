@@ -20,7 +20,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class DatePickerBuilder implements ViewBuilder, OnDateSetListener{
+public class DatePickerBuilder implements ViewBuilder{
 	
 	private Logger logger = Logger.getInstance(this.getClass().getName());
 	
@@ -29,13 +29,27 @@ public class DatePickerBuilder implements ViewBuilder, OnDateSetListener{
 	private LinearLayout llContainer;
 	private Activity activity;
 	private Context context;
+	private Boolean readOnly;
+	private String value;
 	
-	public DatePickerBuilder(Activity activity, Context context) {
+	public DatePickerBuilder(Activity activity) {
 		this.activity = activity;
-		this.context = context;
+		this.context = activity.getApplicationContext();
 		this.tvTitle = new TextView(context);
 		this.view = new TextView(context);
 		this.llContainer = new LinearLayout(context);
+		this.readOnly = Boolean.FALSE;
+		this.value = null;
+	}
+	
+	public DatePickerBuilder(Activity activity, Boolean readOnly, String value) {
+		this.activity = activity;
+		this.context = activity.getApplicationContext();
+		this.tvTitle = new TextView(context);
+		this.view = new TextView(context);
+		this.llContainer = new LinearLayout(context);
+		this.readOnly = readOnly;
+		this.value = value;
 	}
 	
 	@Override
@@ -52,11 +66,12 @@ public class DatePickerBuilder implements ViewBuilder, OnDateSetListener{
 	public void buildView(final Integer idHashCode) {
 		view.setId(idHashCode);
 		view.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		view.setEnabled(!readOnly);
+		view.setText(value != null ? value : "");
 		view.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Toast.makeText(context, "Will call DatePickerDialog (deprecated)/DialogFragment here", Toast.LENGTH_LONG).show();
 				DPFragment dpFragment = new DPFragment();
 				dpFragment.setTextView(view);
 				dpFragment.show(activity.getFragmentManager(), idHashCode.toString());
@@ -81,11 +96,4 @@ public class DatePickerBuilder implements ViewBuilder, OnDateSetListener{
 	public View getConcreteView() {
 		return view;
 	}
-
-	@Override
-	public void onDateSet(DatePicker view, int year, int monthOfYear,
-			int dayOfMonth) {
-		this.view.setText(dayOfMonth + "/" + monthOfYear+1 + "/" + year);
-	}
-
 }

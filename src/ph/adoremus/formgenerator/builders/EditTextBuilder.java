@@ -18,11 +18,23 @@ public class EditTextBuilder implements ViewBuilder{
 	private TextView tvTitle;
 	private EditText view;
 	private LinearLayout llContainer;
+	private Boolean readOnly;
+	private String value;
 	
 	public EditTextBuilder(Context context) {
 		this.tvTitle = new TextView(context);
 		this.view = new EditText(context);
 		this.llContainer = new LinearLayout(context);
+		this.readOnly = Boolean.FALSE;
+		this.value = null;
+	}
+	
+	public EditTextBuilder(Context context, Boolean readOnly, String value) {
+		this.tvTitle = new TextView(context);
+		this.view = new EditText(context);
+		this.llContainer = new LinearLayout(context);
+		this.readOnly = readOnly;
+		this.value = value;
 	}
 	
 	@Override
@@ -38,12 +50,14 @@ public class EditTextBuilder implements ViewBuilder{
 	public void buildView(Integer idHashCode) {
 		view.setId(idHashCode);
 		view.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+		view.setEnabled(!readOnly);
 	}
 	
 	public void buildView(Integer idHashCode, Integer attr, String hint){
 		buildView(idHashCode);
 		view.setInputType(attr);
 		view.setHint(hint);
+		view.setText(value != null ? value : "");
 	}
 	
 	public void buildView(Integer idHashCode, Integer attr, String hint, TextWatcher textWatcher){

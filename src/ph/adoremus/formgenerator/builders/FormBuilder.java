@@ -1,12 +1,14 @@
 package ph.adoremus.formgenerator.builders;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import ph.adoremus.formgenerator.callback.FormCallback;
+import ph.adoremus.formgenerator.serializable.JSONSerializable;
 import ph.adoremus.log.Logger;
 
 import android.app.Activity;
@@ -22,17 +24,20 @@ import android.widget.TextView;
 public class FormBuilder {
 
 	private Logger logger = Logger.getInstance(this.getClass().getName());
-	private JSONObject form;
+	protected JSONObject form;
+	protected JSONObject response;
+	protected Boolean isReadOnly;
 //	private LinearLayout container;
-	private final ArrayList<View> views;
-	private Context context;
-	private Activity activity;
+	protected final ArrayList<View> views;
+	protected Context context;
+	protected Activity activity;
 	
-	
-	public FormBuilder(Activity activity, JSONObject form) throws JSONException{
+	public FormBuilder(Activity activity, JSONObject form, Boolean isReadOnly, JSONObject response) throws JSONException{
 		this.activity = activity;
 		this.context = activity.getApplicationContext();
 		this.form = form;
+		this.response = response;
+		this.isReadOnly = isReadOnly;
 //		this.container = new LinearLayout(this.context);
 //		this.container.setOrientation(LinearLayout.HORIZONTAL);
 //		this.container.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
@@ -41,7 +46,9 @@ public class FormBuilder {
 		buildEditTexts(form.getJSONArray("editTexts"));
 		buildSpinners(form.getJSONArray("spinners"));
 		buildDatePickers(form.getJSONArray("datepickers"));
-		buildFormButtons();
+		if (!isReadOnly){
+			buildFormButtons();
+		}
 		
 //		for (View v : views){
 //			container.addView(v);
@@ -49,11 +56,29 @@ public class FormBuilder {
 	}
 	
 	
-	private void buildEditTexts(JSONArray etArray){
+	protected void buildEditTexts(JSONArray etArray){
 		try {
 			for(int i=0; i<etArray.length(); i++){
 				JSONObject et = etArray.getJSONObject(i);
-				EditTextBuilder etb = new EditTextBuilder(context);
+				String etVal = "";
+				
+				/*
+				 * 1. Check if response is not null
+				 * 2. check if response.id is not null
+				 * 3. Set value of etb.buildView with value of response.id
+				 */
+				if (response != null){
+					Iterator<String> itr = response.keys();
+					while(itr.hasNext()){
+						String v = itr.next();
+						if (et.getString("title").equals(v)){
+							etVal = response.getString(v);
+							break;
+						}
+					}
+				}
+				
+				EditTextBuilder etb = new EditTextBuilder(context, isReadOnly, etVal);
 				etb.buildTitle(et.getString("title").hashCode(), et.getString("title"));
 				etb.buildView(et.getString("id").hashCode(), et.getInt("attr"), et.getString("hint"));
 				etb.buildContainer();
@@ -66,7 +91,7 @@ public class FormBuilder {
 		}
 	}
 	
-	private void buildSpinners(JSONArray spArray){
+	protected void buildSpinners(JSONArray spArray){
 		try{
 			for (int i=0; i<spArray.length(); i++){
 				JSONObject sp = spArray.getJSONObject(i);
@@ -89,12 +114,29 @@ public class FormBuilder {
 		}
 	}
 	
-	private void buildDatePickers(JSONArray dpArray){
+	protected void buildDatePickers(JSONArray dpArray){
 		try{
 			for (int i=0; i<dpArray.length(); i++){
 				JSONObject dp = dpArray.getJSONObject(i);
+				String dpVal = "";
 				
-				DatePickerBuilder dpb = new DatePickerBuilder(activity, context);
+				/*
+				 * 1. Check if response is not null
+				 * 2. check if response.id is not null
+				 * 3. Set value of etb.buildView with value of response.id
+				 */
+				if (response != null){
+					Iterator<String> itr = response.keys();
+					while(itr.hasNext()){
+						String v = itr.next();
+						if (dp.getString("title").equals(v)){
+							dpVal = response.getString(v);
+							break;
+						}
+					}
+				}
+				
+				DatePickerBuilder dpb = new DatePickerBuilder(activity, isReadOnly, dpVal);
 				dpb.buildTitle(dp.getString("title").hashCode(), dp.getString("title"));
 				dpb.buildView(dp.getString("id").hashCode());
 				dpb.buildContainer();
@@ -106,14 +148,14 @@ public class FormBuilder {
 		}
 	}
 	
-	private void buildFormButtons(){
+	protected void buildFormButtons(){
 		ButtonBuilder bb = new ButtonBuilder(context);
 		bb.buildView("submit".hashCode(), "Submit", new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				try{
-					JSONObject obj = new JSONObject();
+					JSONSerializable obj = new JSONSerializable();
 					for (View view : views){
 						if (view instanceof LinearLayout){
 							LinearLayout ll = (LinearLayout) view;
