@@ -76,6 +76,7 @@ public class MainActivity extends Activity implements FormCallback{
 		JSONObject obj = new JSONObject();
 		JSONArray etArray = new JSONArray();
 		JSONArray spArray = new JSONArray();
+		JSONArray dpArray = new JSONArray();
 		
 		try {
 			for (int i=0; i<3; i++){
@@ -97,8 +98,17 @@ public class MainActivity extends Activity implements FormCallback{
 				spArray.put(sp);
 			}
 			
+			for (int l=0; l<2; l++){
+				JSONObject dp = new JSONObject();
+				dp.put("id", "non" + l);
+				dp.put("title", "eleifend" + l);
+				
+				dpArray.put(dp);
+			}
+			
 			obj.put("editTexts", etArray);
 			obj.put("spinners", spArray);
+			obj.put("datepickers", dpArray);
 			
 			FormBuilder fb = new FormBuilder(this, obj);
 			
@@ -107,8 +117,6 @@ public class MainActivity extends Activity implements FormCallback{
 			for (View v : fb.getViews()){
 				rl.addView(v);
 			}
-			
-			logger.debug("rl count " + rl.getChildCount());
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

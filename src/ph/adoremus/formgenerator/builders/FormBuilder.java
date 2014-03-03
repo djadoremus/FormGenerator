@@ -40,6 +40,7 @@ public class FormBuilder {
 		
 		buildEditTexts(form.getJSONArray("editTexts"));
 		buildSpinners(form.getJSONArray("spinners"));
+		buildDatePickers(form.getJSONArray("datepickers"));
 		buildFormButtons();
 		
 //		for (View v : views){
@@ -88,6 +89,22 @@ public class FormBuilder {
 		}
 	}
 	
+	private void buildDatePickers(JSONArray dpArray){
+		try{
+			for (int i=0; i<dpArray.length(); i++){
+				JSONObject dp = dpArray.getJSONObject(i);
+				
+				DatePickerBuilder dpb = new DatePickerBuilder(activity, context);
+				dpb.buildTitle(dp.getString("title").hashCode(), dp.getString("title"));
+				dpb.buildView(dp.getString("id").hashCode());
+				dpb.buildContainer();
+				
+				this.views.add(dpb.getContainer());
+			}
+		} catch (JSONException e){
+			e.printStackTrace();
+		}
+	}
 	
 	private void buildFormButtons(){
 		ButtonBuilder bb = new ButtonBuilder(context);
@@ -115,6 +132,9 @@ public class FormBuilder {
 								} else if (ll.getChildAt(1) instanceof Spinner){
 									Spinner sp = (Spinner) ll.getChildAt(1);
 									obj.put((String)sp.getTag(), sp.getSelectedItem());
+								} else if (ll.getChildAt(1) instanceof TextView){
+									TextView dp_tv = (TextView) ll.getChildAt(1);
+									obj.put((String)dp_tv.getTag(), dp_tv.getText().toString());
 								}
 							}
 						}
