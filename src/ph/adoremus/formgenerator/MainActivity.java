@@ -79,6 +79,7 @@ public class MainActivity extends Activity implements FormCallback{
 		JSONArray dpArray = new JSONArray();
 		
 		try {
+			/*
 			for (int i=0; i<3; i++){
 				JSONObject et = new JSONObject();
 				et.put("id", "lorem" + i);
@@ -105,6 +106,46 @@ public class MainActivity extends Activity implements FormCallback{
 				
 				dpArray.put(dp);
 			}
+			
+			obj.put("editTexts", etArray);
+			obj.put("spinners", spArray);
+			obj.put("datepickers", dpArray);
+			*/
+			
+			JSONObject username = new JSONObject();
+			JSONObject birthdate = new JSONObject();
+			JSONObject phonenumber = new JSONObject();
+			JSONObject salary = new JSONObject();
+			JSONObject picture = new JSONObject();
+			
+			username.put("id", "username");
+			username.put("title", "Username");
+			username.put("attr", InputType.TYPE_CLASS_TEXT);
+			username.put("hint", "Type your username");
+			
+			birthdate.put("id", "birthdate");
+			birthdate.put("title", "Birthday");
+			
+			phonenumber.put("id", "phonenumber");
+			phonenumber.put("title", "Phone Number");
+			phonenumber.put("attr", InputType.TYPE_CLASS_PHONE);
+			phonenumber.put("hint", "Type your phone number");
+			
+			salary.put("id", "salary");
+			salary.put("title", "Salary");
+			salary.put("attr", InputType.TYPE_CLASS_NUMBER);
+			salary.put("hint", "Type your salary");
+			
+			picture.put("id", "picture");
+			picture.put("title", "Picture");
+			picture.put("attr", InputType.TYPE_CLASS_TEXT);
+			picture.put("hint", "Type your picture URL");
+			
+			etArray.put(username);
+			etArray.put(phonenumber);
+			etArray.put(salary);
+			etArray.put(picture);
+			dpArray.put(birthdate);
 			
 			obj.put("editTexts", etArray);
 			obj.put("spinners", spArray);
