@@ -80,7 +80,7 @@ public class FormBuilder {
 				
 				EditTextBuilder etb = new EditTextBuilder(context, isReadOnly, etVal);
 				etb.buildTitle(et.getString("title").hashCode(), et.getString("title"));
-				etb.buildView(et.getString("id").hashCode(), et.getInt("attr"), et.getString("hint"), et.getInt("size"));
+				etb.buildView(et.getString("id").hashCode(), et.getInt("attr"), et.getString("hint"), et.getInt("size"), et.has("format") ? et.getString("format") : null);
 				etb.buildContainer();
 				
 				this.views.add(etb.getContainer());
@@ -138,7 +138,7 @@ public class FormBuilder {
 				
 				DatePickerBuilder dpb = new DatePickerBuilder(activity, isReadOnly, dpVal);
 				dpb.buildTitle(dp.getString("title").hashCode(), dp.getString("title"));
-				dpb.buildView(dp.getString("id").hashCode());
+				dpb.buildView(dp.getString("id").hashCode(), dp.getString("format"));
 				dpb.buildContainer();
 				
 				this.views.add(dpb.getContainer());

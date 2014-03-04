@@ -73,6 +73,21 @@ public class DatePickerBuilder implements ViewBuilder{
 			@Override
 			public void onClick(View v) {
 				DPFragment dpFragment = new DPFragment();
+				dpFragment.setFormat("MM/dd/yyyy");
+				dpFragment.setTextView(view);
+				dpFragment.show(activity.getFragmentManager(), idHashCode.toString());
+			}
+		});
+	}
+	
+	public void buildView(final Integer idHashCode, final String format){
+		buildView(idHashCode);
+		view.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				DPFragment dpFragment = new DPFragment();
+				dpFragment.setFormat(format);
 				dpFragment.setTextView(view);
 				dpFragment.show(activity.getFragmentManager(), idHashCode.toString());
 			}

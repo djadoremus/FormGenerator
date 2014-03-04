@@ -1,11 +1,13 @@
 package ph.adoremus.formgenerator.builders;
 
+import ph.adoremus.formgenerator.formatter.TextFormatter;
 import ph.adoremus.log.Logger;
 import android.R;
 import android.content.Context;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
@@ -54,18 +56,30 @@ public class EditTextBuilder implements ViewBuilder{
 		view.setEnabled(!readOnly);
 	}
 	
-	public void buildView(Integer idHashCode, Integer attr, String hint, Integer maxLength){
+	public void buildView(Integer idHashCode, Integer attr, String hint, Integer maxLength, final String format){
 		buildView(idHashCode);
 		view.setInputType(attr);
 		view.setHint(hint);
 		view.setText(value != null ? value : "");
-		InputFilter[] filter = new InputFilter[1];
-		filter[0] = new InputFilter.LengthFilter(maxLength);
-		view.setFilters(filter);
+		if (maxLength > 0){
+			InputFilter[] filter = new InputFilter[1];
+			filter[0] = new InputFilter.LengthFilter(maxLength);
+			view.setFilters(filter);
+		}
+		view.setOnFocusChangeListener(new OnFocusChangeListener() {
+			
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if (!hasFocus){
+					TextFormatter tf = new TextFormatter(format);
+					view.setText(tf.format(((EditText) v).getText().toString()));
+				}
+			}
+		});
 	}
 	
-	public void buildView(Integer idHashCode, Integer attr, String hint, Integer maxLength, TextWatcher textWatcher){
-		buildView(idHashCode, attr, hint, maxLength);
+	public void buildView(Integer idHashCode, Integer attr, String hint, Integer maxLength, String format, TextWatcher textWatcher){
+		buildView(idHashCode, attr, hint, maxLength, format);
 		view.addTextChangedListener(textWatcher);
 	}
 	
