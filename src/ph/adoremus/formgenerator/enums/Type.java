@@ -2,7 +2,7 @@ package ph.adoremus.formgenerator.enums;
 
 public enum Type {
 
-	TEXT("text"), PHONE("phone"), NUMBER("number"), DATEPICKER("datepicker"), 
+	TEXT("text"), PHONE("phone"), NUMBER("number"), PASSWORD("password"), DATEPICKER("datepicker"), 
 	RADIOBUTTONS("radiobutton"), CHECKBOXES("checkbox");
 
 	private String value;
@@ -22,6 +22,8 @@ public enum Type {
 			return Type.PHONE;
 		} else if (Type.NUMBER.getValue().equals(value)){
 			return Type.NUMBER;
+		} else if (Type.PASSWORD.getValue().equals(value)){
+			return Type.PASSWORD;
 		} else if (Type.DATEPICKER.getValue().equals(value)){
 			return Type.DATEPICKER;
 		} else if (Type.RADIOBUTTONS.getValue().equals(value)){

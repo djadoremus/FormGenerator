@@ -3,6 +3,7 @@ package ph.adoremus.formgenerator.builders;
 import ph.adoremus.log.Logger;
 import android.R;
 import android.content.Context;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,15 +54,18 @@ public class EditTextBuilder implements ViewBuilder{
 		view.setEnabled(!readOnly);
 	}
 	
-	public void buildView(Integer idHashCode, Integer attr, String hint){
+	public void buildView(Integer idHashCode, Integer attr, String hint, Integer maxLength){
 		buildView(idHashCode);
 		view.setInputType(attr);
 		view.setHint(hint);
 		view.setText(value != null ? value : "");
+		InputFilter[] filter = new InputFilter[1];
+		filter[0] = new InputFilter.LengthFilter(maxLength);
+		view.setFilters(filter);
 	}
 	
-	public void buildView(Integer idHashCode, Integer attr, String hint, TextWatcher textWatcher){
-		buildView(idHashCode, attr, hint);
+	public void buildView(Integer idHashCode, Integer attr, String hint, Integer maxLength, TextWatcher textWatcher){
+		buildView(idHashCode, attr, hint, maxLength);
 		view.addTextChangedListener(textWatcher);
 	}
 	

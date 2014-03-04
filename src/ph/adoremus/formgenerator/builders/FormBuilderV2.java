@@ -51,10 +51,22 @@ public class FormBuilderV2 {
 		ArrayList<JSONObject> views = new ArrayList<JSONObject>();
 		
 		Iterator<String> keys = form.keys();
+		logger.debug("form " + form);
 		while(keys.hasNext()){
 			String key = keys.next();
-			JSONObject obj = form.getJSONObject(key);
-//			logger.debug("obj " + obj);
+			if (!"form_name".equals(key)){
+				JSONObject obj = form.getJSONObject(key);
+				views.add(obj);
+			}
+		}
+		JSONObject[] s = new JSONObject[views.size()];
+		s = views.toArray(s);
+		s = bubbleSort(s);
+		for (int i=0; i<s.length; i++){
+			logger.debug("obj " + s[i].getInt("sort"));
+		}
+		for (int i=0; i<s.length; i++){
+			JSONObject obj = s[i];
 			if (Type.TEXT == Type.getValue(obj.getString("type"))){
 				obj.put("attr", InputType.TYPE_CLASS_TEXT);
 				buildEditTexts(obj);
@@ -63,6 +75,9 @@ public class FormBuilderV2 {
 				buildEditTexts(obj);
 			} else if (Type.NUMBER == Type.getValue(obj.getString("type"))){
 				obj.put("attr", InputType.TYPE_CLASS_NUMBER);
+						buildEditTexts(obj);
+			} else if (Type.PASSWORD == Type.getValue(obj.getString("type"))){
+				obj.put("attr", InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_VARIATION_PASSWORD);
 				buildEditTexts(obj);
 			} else if (Type.DATEPICKER == Type.getValue(obj.getString("type"))){
 				buildDatePickers(obj);
@@ -71,28 +86,7 @@ public class FormBuilderV2 {
 			} else if (Type.CHECKBOXES == Type.getValue(obj.getString("type"))){
 				logger.debug("checkboxes to be added");
 			} 
-			views.add(obj);
 		}
-//		JSONObject[] s = bubbleSort(views);
-//		for (int i=0; i<s.length; i++){
-//			JSONObject obj = s[i];
-//			if (Type.TEXT == Type.getValue(obj.getString("type"))){
-//				obj.put("attr", InputType.TYPE_CLASS_TEXT);
-//				buildEditTexts(obj);
-//			} else if (Type.PHONE == Type.getValue(obj.getString("type"))){
-//				obj.put("attr", InputType.TYPE_CLASS_PHONE);
-//				buildEditTexts(obj);
-//			} else if (Type.NUMBER == Type.getValue(obj.getString("type"))){
-//				obj.put("attr", InputType.TYPE_CLASS_NUMBER);
-//				buildEditTexts(obj);
-//			} else if (Type.DATEPICKER == Type.getValue(obj.getString("type"))){
-//				buildDatePickers(obj);
-//			} else if (Type.RADIOBUTTONS == Type.getValue(obj.getString("type"))){
-//				logger.debug("radiobuttons to be added");
-//			} else if (Type.CHECKBOXES == Type.getValue(obj.getString("type"))){
-//				logger.debug("checkboxes to be added");
-//			} 
-//		}
 		
 		if (!isReadOnly){
 			buildFormButtons();
@@ -126,7 +120,7 @@ public class FormBuilderV2 {
 			
 			EditTextBuilder etb = new EditTextBuilder(context, isReadOnly, etVal);
 			etb.buildTitle(etObject.getString("title").hashCode(), etObject.getString("title"));
-			etb.buildView(etObject.getString("id").hashCode(), etObject.getInt("attr"), etObject.getString("hint"));
+			etb.buildView(etObject.getString("id").hashCode(), etObject.getInt("attr"), etObject.getString("hint"), etObject.getInt("size"));
 			etb.buildContainer();
 			
 			this.views.add(etb.getContainer());
@@ -241,45 +235,21 @@ public class FormBuilderV2 {
 		return views;
 	}
 	
-	private JSONObject[] bubbleSort(ArrayList<JSONObject> sort) throws JSONException{
-//		JSONObject[] arrSort = new JSONObject[sort.size()];
-//		for (int i=0; i<arrSort.length; i++){
-//			arrSort[i] = sort.get(i);
-//		}
-//		for (int i=0; i<sort.size(); i++){
-//			JSONObject left = sort.get(i);
-//			for (int k=i; k<sort.size(); k++){
-//				JSONObject right = sort.get(k);
-//				if (left.getInt("sort") > right.getInt("sort")){
-//					arrSort[i] = right;
-//				} else {
-//					arrSort[i] = left;
-//				}
-//				logger.debug("arrSort[" + i + "]" + arrSort[i].getInt("sort"));
-//			}
-//		}
-//		
+	private JSONObject[] bubbleSort(JSONObject[] arrSort) throws JSONException{
+		Boolean flag = Boolean.TRUE;
+		JSONObject temp;
+		while(flag){
+			flag = Boolean.FALSE;
+			for (int i=0; i<arrSort.length-1; i++){
+				if (arrSort[i].getInt("sort") > arrSort[i+1].getInt("sort")){
+					temp = arrSort[i];
+					arrSort[i] = arrSort[i+1];
+					arrSort[i+1] = temp;
+					flag = Boolean.TRUE;
+				}
+			}
+		}
 		
-		JSONObject[] arrSort = new JSONObject[sort.size()];
-		int j;
-		boolean flag = true;   // set flag to true to begin first pass
-		JSONObject temp;   //holding variable
-		
-		while ( flag ){
-			flag= false;    //set flag to false awaiting a possible swap
-			for( j=0;  j < sort.size() -1;  j++ ){
-				JSONObject left = sort.get(j);
-				JSONObject right = sort.get(j+1);
-				// change to > for ascending sort 
-				logger.debug(left.getInt("sort") + "<" + right.getInt("sort"));
-				if ( left.getInt("sort") < right.getInt("sort") ){
-					temp = sort.get(j);                //swap elements
-					arrSort[j] = sort.get(j+1);
-					arrSort[j+1] = temp;
-					flag = true;              //shows a swap occurred  
-				} 
-			} 
-		} 
 		return arrSort;
 	}
 }

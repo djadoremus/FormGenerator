@@ -80,7 +80,7 @@ public class FormBuilder {
 				
 				EditTextBuilder etb = new EditTextBuilder(context, isReadOnly, etVal);
 				etb.buildTitle(et.getString("title").hashCode(), et.getString("title"));
-				etb.buildView(et.getString("id").hashCode(), et.getInt("attr"), et.getString("hint"));
+				etb.buildView(et.getString("id").hashCode(), et.getInt("attr"), et.getString("hint"), et.getInt("size"));
 				etb.buildContainer();
 				
 				this.views.add(etb.getContainer());
